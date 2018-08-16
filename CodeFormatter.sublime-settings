@@ -22,7 +22,7 @@
 
         // Disable specific transformations - only if "passes_options" is empty
         // @deprecated
-        "excludes": []
+        "excludes": [],
         
         // Define php-cs-fixer option as JSON object, 
         // Fallbacks to phpf and uses "passes" and "excludes" option if not specified
