@@ -1,6 +1,6 @@
-# @author             Avtandil Kikabidze
-# @copyright         Copyright (c) 2008-2015, Avtandil Kikabidze aka LONGMAN (akalongman@gmail.com)
-# @link             http://longman.me
+# @author          Avtandil Kikabidze
+# @copyright       Copyright (c) 2008-2015, Avtandil Kikabidze aka LONGMAN (akalongman@gmail.com)
+# @link            http://longman.me
 # @license         The MIT License (MIT)
 
 import os
@@ -23,7 +23,10 @@ class PhpFormatter:
 
     def format(self, text):
         # Create temp file
-        tmp_file = tempfile.NamedTemporaryFile()
+        if self.formatter.platform == 'windows':
+            tmp_file = tempfile.NamedTemporaryFile(delete=False)
+        else:
+            tmp_file = tempfile.NamedTemporaryFile()
         tmp_file.write(text)
         tmp_file.seek(0)
 
@@ -138,8 +141,6 @@ class PhpFormatter:
 
             cmd.append('-')
 
-        print(cmd)
-
         try:
             if self.formatter.platform == 'windows':
                 startupinfo = subprocess.STARTUPINFO()
@@ -155,7 +156,11 @@ class PhpFormatter:
                     stderr=subprocess.PIPE)
             stdout, stderr = p.communicate() if len(passes_option) > 0 else p.communicate(text)
             if len(passes_option) > 0:
-                stdout = tmp_file.read()
+                formatted_str = tmp_file.read()
+                if self.formatter.platform == 'windows':
+                    tmp_file.close()
+                    os.unlink(tmp_file.name)
+                stdout = formatted_str
         except Exception as e:
             stdout = ''
             stderr = str(e)
